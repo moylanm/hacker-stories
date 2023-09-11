@@ -23,22 +23,41 @@ function App() {
   return (
     <div>
       <h1>My Hacker Stories</h1>
+
+      <Search />
+      
+      <hr />
+      
+      <List />
+    </div>
+  );
+}
+
+function Search() {
+  return (
+    <div>
       <label htmlFor='search'>Search: </label>
       <input id='search' type='text' />
-      <hr />
-      <ul>
-        {list.map(function (item) {
-          return <li key={item.objectId}>
-                    <a href={item.url}>{item.title}</a>
-                    <ul>
-                      <li>Author(s): {item.author}</li>
-                      <li>Comments: {item.numComments}</li>
-                      <li>Points: {item.points}</li>
-                    </ul>
-                 </li>;
-        })}
-      </ul>
     </div>
+  );
+}
+
+function List() {
+  return (
+    <ul>
+      {list.map(function (item) {
+        return (
+          <li key={item.objectId}>
+            <a href={item.url}>{item.title}</a>
+            <ul>
+              <li>Author(s): {item.author}</li>
+              <li>Comments: {item.numComments}</li>
+              <li>Points: {item.points}</li>
+            </ul>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
