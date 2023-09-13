@@ -33,9 +33,27 @@ const App = () => {
     },
   ]
 
+  const getAsyncStories = () => 
+    new Promise(resolve =>
+      setTimeout(
+        () => resolve({ data: { stories: initialStories } }),
+        1500
+      )
+    );
+
   const [searchTerm, setSearchTerm] = useStorageState('search', '');
 
-  const [stories, setStories] = React.useState(initialStories);
+  const [stories, setStories] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+
+    getAsyncStories().then(result => {
+      setStories(result.data.stories);
+      setIsLoading(false);
+    });
+  }, []);
 
   const handleRemoveStory = item => {
     const newStories = stories.filter(story => item.objectId !== story.objectId);
@@ -66,7 +84,14 @@ const App = () => {
       
       <hr />
       
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <List 
+          list={searchedStories}
+          onRemoveItem={handleRemoveStory}
+        />
+      )}
     </div>
   );
 }
@@ -75,8 +100,8 @@ const InputWithLabel = ({
   id,
   type = 'text',
   value,
-  onInputChange,
   isFocused,
+  onInputChange,
   children 
 }) => (
   <>
@@ -96,8 +121,8 @@ InputWithLabel.propTypes = {
   id: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.string,
-  onInputChange: PropTypes.func,
   isFocused: PropTypes.bool,
+  onInputChange: PropTypes.func,
   children: PropTypes.any
 }
 
