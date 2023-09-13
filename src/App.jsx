@@ -34,7 +34,7 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search onSearch={handleSearch} />
+      <Search searchTerm={searchTerm} onSearch={handleSearch} />
       
       <hr />
       
@@ -43,32 +43,28 @@ const App = () => {
   );
 }
 
-const Search = (props) => (
+const Search = ({ searchTerm, onSearch }) => (
   <div>
     <label htmlFor="search">Search: </label>
-    <input id="search" type="text" onChange={props.onSearch} />
+    <input id="search" type="text" value={searchTerm} onChange={onSearch} />
   </div>
 );
 
-const List = (props) => (
+const List = ({ list }) => (
   <ul>
-    {props.list.map(item => <Item key={item.objectId} item={item} />)}
+    {list.map(item => <Item key={item.objectId} {...item} />)}
   </ul>
 );
 
-const Item = (props) => {
-  const item = props.item;
-
-  return (
-    <li>
-      <a href={item.url}>{item.title}</a>
-      <ul>
-        <li>Author(s): {item.author}</li>
-        <li>Comments: {item.numComments}</li>
-        <li>Points: {item.points}</li>
-      </ul>
-    </li>
-  );
-}
+const Item = ({ title, url, author, numComments, points }) => (
+  <li>
+    <a href={url}>{title}</a>
+    <ul>
+      <li>Author(s): {author}</li>
+      <li>Comments: {numComments}</li>
+      <li>Points: {points}</li>
+    </ul>
+  </li>
+);
 
 export default App
