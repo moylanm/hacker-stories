@@ -14,7 +14,7 @@ const useStorageState = (key, initialState) => {
 }
 
 const App = () => {
-  const stories = [
+  const initialStories = [
     {
       title: 'React',
       url: 'https://reactjs.org/',
@@ -34,6 +34,14 @@ const App = () => {
   ]
 
   const [searchTerm, setSearchTerm] = useStorageState('search', '');
+
+  const [stories, setStories] = React.useState(initialStories);
+
+  const handleRemoveStory = item => {
+    const newStories = stories.filter(story => item.objectId !== story.objectId);
+
+    setStories(newStories);
+  };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -58,7 +66,7 @@ const App = () => {
       
       <hr />
       
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
     </div>
   );
 }
@@ -93,33 +101,33 @@ InputWithLabel.propTypes = {
   children: PropTypes.any
 }
 
-const List = ({ list }) => (
+const List = ({ list, onRemoveItem }) => (
   <ul>
-    {list.map(({ objectId, ...item }) => <Item key={objectId} {...item} />)}
+    {list.map(item => <Item key={item.objectId} onRemoveItem={onRemoveItem} item={item} />)}
   </ul>
 );
 
 List.propTypes = {
-  list: PropTypes.array
+  list: PropTypes.array,
+  onRemoveItem: PropTypes.func,
 }
 
-const Item = ({ title, url, author, numComments, points }) => (
+const Item = ({ onRemoveItem, item }) => (
   <li>
-    <a href={url}>{title}</a>
+    <button type="button" onClick={() => onRemoveItem(item)}>X</button>
+    &nbsp;
+    <a href={item.url}>{item.title}</a>
     <ul>
-      <li>Author(s): {author}</li>
-      <li>Comments: {numComments}</li>
-      <li>Points: {points}</li>
+      <li>Author(s): {item.author}</li>
+      <li>Comments: {item.numComments}</li>
+      <li>Points: {item.points}</li>
     </ul>
   </li>
 );
 
 Item.propTypes = {
-  title: PropTypes.string,
-  url: PropTypes.string,
-  author: PropTypes.string,
-  numComments: PropTypes.number,
-  points: PropTypes.number
+  onRemoveItem: PropTypes.func,
+  item: PropTypes.object
 }
 
 export default App
