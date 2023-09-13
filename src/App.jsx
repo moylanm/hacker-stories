@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { PropTypes } from 'prop-types';
 
 const App = () => {
   const stories = [
@@ -20,7 +21,13 @@ const App = () => {
     },
   ]
 
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('search') || ''
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem('search', searchTerm);
+  }, [searchTerm]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -50,11 +57,20 @@ const Search = ({ searchTerm, onSearch }) => (
   </div>
 );
 
+Search.propTypes = {
+  searchTerm: PropTypes.string,
+  onSearch: PropTypes.func
+}
+
 const List = ({ list }) => (
   <ul>
     {list.map(({ objectId, ...item }) => <Item key={objectId} {...item} />)}
   </ul>
 );
+
+List.propTypes = {
+  list: PropTypes.array
+}
 
 const Item = ({ title, url, author, numComments, points }) => (
   <li>
@@ -66,5 +82,13 @@ const Item = ({ title, url, author, numComments, points }) => (
     </ul>
   </li>
 );
+
+Item.propTypes = {
+  title: PropTypes.string,
+  url: PropTypes.string,
+  author: PropTypes.string,
+  numComments: PropTypes.number,
+  points: PropTypes.number
+}
 
 export default App
