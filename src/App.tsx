@@ -1,47 +1,22 @@
 import * as React from 'react';
 
-type Story = {
-  objectID: number;
-  url: string;
-  title: string;
-  author: string;
-  numComments: number;
-  points: number;
-};
-
-type Stories = Story[];
-
-const initialStories = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org/',
-    author: 'Jordan Walke',
-    numComments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    numComments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
-const getAsyncStories = (): Promise<{ data: { stories: Stories } }> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () => resolve({ data: { stories: initialStories } }),
-      1500
-    )
-  );
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
 const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT';
 const STORIES_FETCH_SUCCESS = 'STORIES_FETCH_SUCCESS';
 const STORIES_FETCH_FAILURE = 'STORIES_FETCH_FAILURE';
 const REMOVE_STORY = 'REMOVE_STORY';
+
+type Story = {
+  objectID: number;
+  url: string;
+  title: string;
+  author: string;
+  num_comments: number;
+  points: number;
+};
+
+type Stories = Story[];
 
 type StoriesState = {
   data: Stories;
@@ -86,7 +61,6 @@ const storiesReducer = (
       };
     case STORIES_FETCH_SUCCESS:
       return {
-        ...state,
         isLoading: false,
         isError: false,
         data: action.payload
@@ -133,17 +107,20 @@ const App = () => {
   );
 
   React.useEffect(() => {
+    if (!searchTerm) return;
+
     dispatchStories({ type: STORIES_FETCH_INIT });
 
-    getAsyncStories()
+    fetch(`${API_ENDPOINT}${searchTerm}`)
+      .then((response) => response.json())
       .then((result) => {
         dispatchStories({
           type: STORIES_FETCH_SUCCESS,
-          payload: result.data.stories,
+          payload: result.hits,
         });
       })
       .catch(() => dispatchStories({ type: STORIES_FETCH_FAILURE }));
-  }, []);
+  }, [searchTerm]);
 
   const handleRemoveStory = (item: Story) => {
     dispatchStories({
@@ -157,10 +134,6 @@ const App = () => {
   ) => {
     setSearchTerm(event.target.value);
   };
-
-  const searchedStories = stories.data.filter((story) =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div>
@@ -183,7 +156,7 @@ const App = () => {
         <p>Loading ...</p>
       ) : (
         <List
-          list={searchedStories}
+          list={stories.data}
           onRemoveItem={handleRemoveStory}
         />
       )}
@@ -249,8 +222,8 @@ const Item: React.FC<ItemProps> = ({ item, onRemoveItem }) => (
     &nbsp;
     <a href={item.url}>{item.title}</a>
     <ul>
-      <li>Author(s): {item.author}</li>
-      <li>Comments: {item.numComments}</li>
+      <li>Author: {item.author}</li>
+      <li>Comments: {item.num_comments}</li>
       <li>Points: {item.points}</li>
     </ul>
   </li>
