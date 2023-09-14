@@ -38,18 +38,18 @@ const getAsyncStories = (): Promise<{ data: { stories: Stories } }> =>
     )
   );
 
+const SET_STORIES = 'SET_STORIES';
+const REMOVE_STORY = 'REMOVE_STORY';
+
 type StoriesState = Stories;
 
-const setStories = 'SET_STORIES';
-const removeStory = 'REMOVE_STORY';
-
 type StoriesSetAction = {
-  type: typeof setStories;
+  type: typeof SET_STORIES;
   payload: Stories;
 };
 
 type StoriesRemoveAction = {
-  type: typeof removeStory;
+  type: typeof REMOVE_STORY;
   payload: Story;
 };
 
@@ -60,9 +60,9 @@ const storiesReducer = (
   action: StoriesAction
 ) => {
   switch (action.type) {
-    case setStories:
+    case SET_STORIES:
       return action.payload;
-    case removeStory:
+    case REMOVE_STORY:
       return state.filter(
         (story) => action.payload.objectID !== story.objectID
       );
@@ -99,7 +99,7 @@ const App = () => {
     getAsyncStories()
       .then((result) => {
         dispatchStories({
-          type: setStories,
+          type: SET_STORIES,
           payload: result.data.stories,
         });
         setIsLoading(false);
@@ -109,7 +109,7 @@ const App = () => {
 
   const handleRemoveStory = (item: Story) => {
     dispatchStories({
-      type: removeStory,
+      type: REMOVE_STORY,
       payload: item,
     })
   };
