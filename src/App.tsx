@@ -1,6 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
 
+import './App.css';
+
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
 const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT';
@@ -152,16 +154,14 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>My Hacker Stories</h1>
+    <div className="container">
+      <h1 className="headline-primary">My Hacker Stories</h1>
 
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
         onSearchSubmit={handlSearchSubmit}
       />
-
-      <hr />
 
       {stories.isError && <p>Something went wrong ...</p>}
 
