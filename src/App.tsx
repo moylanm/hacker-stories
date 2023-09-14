@@ -143,6 +143,8 @@ const App = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchTerm(event.target.value);
+
+    event.preventDefault();
   };
 
   const handlSearchSubmit = () => {
@@ -153,22 +155,11 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <InputWithLabel
-        id="search"
-        value={searchTerm}
-        isFocused
-        onInputChange={handleSearchInput}
-      >
-        <strong>Search:</strong>
-      </InputWithLabel>
-      &nbsp;
-      <button
-        type="button"
-        disabled={!searchTerm}
-        onClick={handlSearchSubmit}
-      >
-        Submit
-      </button>
+      <SearchForm
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+        onSearchSubmit={handlSearchSubmit}
+      />
 
       <hr />
 
@@ -185,6 +176,33 @@ const App = () => {
     </div>
   );
 };
+
+type SearchFormProps = {
+  searchTerm: string;
+  onSearchInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+}
+
+const SearchForm: React.FC<SearchFormProps> = ({
+  searchTerm,
+  onSearchInput,
+  onSearchSubmit
+}) => (
+  <form onSubmit={onSearchSubmit}>
+    <InputWithLabel
+      id="search"
+      value={searchTerm}
+      isFocused
+      onInputChange={onSearchInput}
+    >
+      <strong>Search:</strong>
+    </InputWithLabel>
+    &nbsp;
+    <button type="submit" disabled={!searchTerm}>
+      Submit
+    </button>
+  </form>
+);
 
 type InputWithLabelProps = {
   id: string;
