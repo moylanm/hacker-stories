@@ -188,7 +188,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
   onSearchInput,
   onSearchSubmit
 }) => (
-  <form onSubmit={onSearchSubmit}>
+  <form onSubmit={onSearchSubmit} className="search-form">
     <InputWithLabel
       id="search"
       value={searchTerm}
@@ -198,7 +198,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
       <strong>Search:</strong>
     </InputWithLabel>
     &nbsp;
-    <button type="submit" disabled={!searchTerm}>
+    <button
+      type="submit"
+      disabled={!searchTerm}
+      className="button button_small">
       Submit
     </button>
   </form>
@@ -222,7 +225,9 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
   children,
 }) => (
   <>
-    <label htmlFor={id}>{children}</label>
+    <label htmlFor={id} className="label">
+      {children}
+    </label>
     &nbsp;
     <input
       id={id}
@@ -230,6 +235,7 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
       type={type}
       value={value}
       onChange={onInputChange}
+      className="input"
     />
   </>
 );
@@ -257,8 +263,12 @@ type ItemProps = {
 };
 
 const Item: React.FC<ItemProps> = ({ item, onRemoveItem }) => (
-  <li>
-    <button type="button" onClick={() => onRemoveItem(item)}>X</button>
+  <li className="item">
+    <button
+      type="button"
+      onClick={() => onRemoveItem(item)}
+      className="button button_small"
+    >X</button>
     &nbsp;
     <a href={item.url}>{item.title}</a>
     <ul>
