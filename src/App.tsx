@@ -34,9 +34,42 @@ const getAsyncStories = (): Promise<{ data: { stories: Stories } }> =>
   new Promise((resolve) =>
     setTimeout(
       () => resolve({ data: { stories: initialStories } }),
-      2000
+      1500
     )
   );
+
+type StoriesState = Stories;
+
+const setStories = 'SET_STORIES';
+const removeStory = 'REMOVE_STORY';
+
+type StoriesSetAction = {
+  type: typeof setStories;
+  payload: Stories;
+};
+
+type StoriesRemoveAction = {
+  type: typeof removeStory;
+  payload: Story;
+};
+
+type StoriesAction = StoriesSetAction | StoriesRemoveAction;
+
+const storiesReducer = (
+  state: StoriesState,
+  action: StoriesAction
+) => {
+  switch (action.type) {
+    case setStories:
+      return action.payload;
+    case removeStory:
+      return state.filter(
+        (story) => action.payload.objectID !== story.objectID
+      );
+    default:
+      throw new Error();
+  }
+}
 
 const useStorageState = (
   key: string,
@@ -56,27 +89,29 @@ const useStorageState = (
 const App = () => {
   const [searchTerm, setSearchTerm] = useStorageState('search', '');
 
-  const [stories, setStories] = React.useState<Stories>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, []);
 
   React.useEffect(() => {
     setIsLoading(true);
 
     getAsyncStories()
       .then((result) => {
-        setStories(result.data.stories);
+        dispatchStories({
+          type: setStories,
+          payload: result.data.stories,
+        });
         setIsLoading(false);
       })
       .catch(() => setIsError(true));
   }, []);
 
   const handleRemoveStory = (item: Story) => {
-    const newStories = stories.filter(
-      (story) => item.objectID !== story.objectID
-    );
-
-    setStories(newStories);
+    dispatchStories({
+      type: removeStory,
+      payload: item,
+    })
   };
 
   const handleSearch = (
@@ -134,29 +169,19 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
   onInputChange,
   isFocused,
   children,
-}) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    if (isFocused && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isFocused]);
-
-  return (
-    <>
-      <label htmlFor={id}>{children}</label>
-      &nbsp;
-      <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        value={value}
-        onChange={onInputChange}
-      />
-    </>
-  );
-};
+}) => (
+  <>
+    <label htmlFor={id}>{children}</label>
+    &nbsp;
+    <input
+      id={id}
+      autoFocus={isFocused}
+      type={type}
+      value={value}
+      onChange={onInputChange}
+    />
+  </>
+);
 
 type ListProps = {
   list: Stories;
@@ -183,13 +208,14 @@ type ItemProps = {
 const Item: React.FC<ItemProps> = ({ item, onRemoveItem }) => (
   <li>
     <button type="button" onClick={() => onRemoveItem(item)}>X</button>
+    &nbsp;
     <a href={item.url}>{item.title}</a>
     <ul>
       <li>Author(s): {item.author}</li>
       <li>Comments: {item.numComments}</li>
       <li>Points: {item.points}</li>
     </ul>
-</li>
+  </li>
 );
 
 export default App;
