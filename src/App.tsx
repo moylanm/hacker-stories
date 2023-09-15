@@ -134,12 +134,12 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = (item: Story) => {
+  const handleRemoveStory = React.useCallback((item: Story) => {
     dispatchStories({
       type: REMOVE_STORY,
       payload: item,
     })
-  };
+  }, []);
 
   const handleSearchInput = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -245,16 +245,18 @@ type ListProps = {
   onRemoveItem: (item: Story) => void;
 };
 
-const List: React.FC<ListProps> = ({ list, onRemoveItem }) => (
-  <ul>
-    {list.map((item) => (
-      <Item
-        key={item.objectID}
-        item={item}
-        onRemoveItem={onRemoveItem}
-      />
-    ))}
-  </ul>
+const List: React.FC<ListProps> = React.memo(
+  ({ list, onRemoveItem }) => (
+    <ul>
+      {list.map((item) => (
+        <Item
+          key={item.objectID}
+          item={item}
+          onRemoveItem={onRemoveItem}
+        />
+      ))}
+    </ul>
+  )
 );
 
 type ItemProps = {
