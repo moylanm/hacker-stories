@@ -1,6 +1,9 @@
 import * as React from 'react';
 import axios from 'axios';
 
+import { SearchForm } from './SearchForm';
+import { List } from './List';
+
 import './App.css';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
@@ -174,110 +177,6 @@ const App = () => {
   );
 };
 
-type SearchFormProps = {
-  searchTerm: string;
-  onSearchInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-}
-
-const SearchForm: React.FC<SearchFormProps> = ({
-  searchTerm,
-  onSearchInput,
-  onSearchSubmit
-}) => (
-  <form onSubmit={onSearchSubmit} className="search-form">
-    <InputWithLabel
-      id="search"
-      value={searchTerm}
-      isFocused
-      onInputChange={onSearchInput}
-    >
-      <strong>Search:</strong>
-    </InputWithLabel>
-    &nbsp;
-    <button
-      type="submit"
-      disabled={!searchTerm}
-      className="button button_small">
-      Submit
-    </button>
-  </form>
-);
-
-type InputWithLabelProps = {
-  id: string;
-  value: string;
-  type?: string;
-  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isFocused: boolean;
-  children: React.ReactNode;
-};
-
-const InputWithLabel: React.FC<InputWithLabelProps> = ({
-  id,
-  value,
-  type = 'text',
-  onInputChange,
-  isFocused,
-  children,
-}) => (
-  <>
-    <label htmlFor={id} className="label">
-      {children}
-    </label>
-    &nbsp;
-    <input
-      id={id}
-      autoFocus={isFocused}
-      type={type}
-      value={value}
-      onChange={onInputChange}
-      className="input"
-    />
-  </>
-);
-
-type ListProps = {
-  list: Stories;
-  onRemoveItem: (item: Story) => void;
-};
-
-const List: React.FC<ListProps> = React.memo(
-  ({ list, onRemoveItem }) => (
-    <ul>
-      {list.map((item) => (
-        <Item
-          key={item.objectID}
-          item={item}
-          onRemoveItem={onRemoveItem}
-        />
-      ))}
-    </ul>
-  )
-);
-
-type ItemProps = {
-  item: Story;
-  onRemoveItem: (item: Story) => void;
-};
-
-const Item: React.FC<ItemProps> = ({ item, onRemoveItem }) => (
-  <li className="item">
-    <button
-      type="button"
-      onClick={() => onRemoveItem(item)}
-      className="button button_small"
-    >X</button>
-    &nbsp;
-    <a href={item.url}>{item.title}</a>
-    <ul>
-      <li>Author: {item.author}</li>
-      <li>Comments: {item.num_comments}</li>
-      <li>Points: {item.points}</li>
-    </ul>
-  </li>
-);
-
 export default App;
 
-export { storiesReducer, SearchForm, InputWithLabel, List, Item };
+export { storiesReducer };
