@@ -6,7 +6,7 @@ import App, {
   List,
   SearchForm,
   InputWithLabel,
-} from './App';
+} from '../src/App';
 
 const storyOne = {
   title: 'React',
