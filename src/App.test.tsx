@@ -89,4 +89,3 @@ describe('storiesReducer', () => {
     expect(newState).toStrictEqual(expectedState);
   });
 });
-
