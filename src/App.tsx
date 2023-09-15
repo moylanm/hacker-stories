@@ -5,11 +5,6 @@ import './App.css';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT';
-const STORIES_FETCH_SUCCESS = 'STORIES_FETCH_SUCCESS';
-const STORIES_FETCH_FAILURE = 'STORIES_FETCH_FAILURE';
-const REMOVE_STORY = 'REMOVE_STORY';
-
 type Story = {
   objectID: number;
   url: string;
@@ -28,20 +23,22 @@ type StoriesState = {
 };
 
 type StoriesFetchInitAction = {
-  type: typeof STORIES_FETCH_INIT;
+  type: string;
+  payload?: any;
 };
 
 type StoriesFetchSuccessAction = {
-  type: typeof STORIES_FETCH_SUCCESS;
+  type: string;
   payload: Stories;
 };
 
 type StoriesFetchFailureAction = {
-  type: typeof STORIES_FETCH_FAILURE;
+  type: string;
+  payload?: any;
 };
 
 type StoriesRemoveAction = {
-  type: typeof REMOVE_STORY;
+  type: string;
   payload: Story;
 };
 
@@ -56,25 +53,25 @@ const storiesReducer = (
   action: StoriesAction
 ) => {
   switch (action.type) {
-    case STORIES_FETCH_INIT:
+    case 'STORIES_FETCH_INIT':
       return {
         ...state,
         isLoading: true,
         isError: false
       };
-    case STORIES_FETCH_SUCCESS:
+    case 'STORIES_FETCH_SUCCESS':
       return {
         isLoading: false,
         isError: false,
         data: action.payload
       };
-    case STORIES_FETCH_FAILURE:
+    case 'STORIES_FETCH_FAILURE':
       return {
         ...state,
         isLoading: false,
         isError: true,
       };
-    case REMOVE_STORY:
+    case 'REMOVE_STORY':
       return {
         ...state,
         data: state.data.filter(
@@ -116,17 +113,17 @@ const App = () => {
   const handleFetchStories = React.useCallback(async () => {
     if (!searchTerm) return;
 
-    dispatchStories({ type: STORIES_FETCH_INIT });
+    dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
     try {
       const result = await axios.get(url);
 
       dispatchStories({
-        type: STORIES_FETCH_SUCCESS,
+        type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.hits
       })
     } catch {
-      dispatchStories({ type: STORIES_FETCH_FAILURE });
+      dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
     }
   }, [url]);
 
@@ -136,7 +133,7 @@ const App = () => {
 
   const handleRemoveStory = React.useCallback((item: Story) => {
     dispatchStories({
-      type: REMOVE_STORY,
+      type: 'REMOVE_STORY',
       payload: item,
     })
   }, []);
