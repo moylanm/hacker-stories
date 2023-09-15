@@ -38,9 +38,55 @@ describe('storiesReducer', () => {
     const expectedState = {
       data: [storyTwo],
       isLoading: false,
-      isError: false,
+      isError: false
+    };
+
+    expect(newState).toStrictEqual(expectedState);
+  });
+  
+  it('initializes the fetching of stories', () => {
+    const action = { type: 'STORIES_FETCH_INIT' };
+    const state = { data: [], isLoading: false, isError: false };
+
+    const newState = storiesReducer(state, action);
+
+    const expectedState = {
+      data: [],
+      isLoading: true,
+      isError: false
+    };
+
+    expect(newState).toStrictEqual(expectedState);
+  });
+
+  it('resturns fetched stories on success', () => {
+    const action = { type: 'STORIES_FETCH_SUCCESS', payload: stories };
+    const state = { data: [], isLoading: false, isError: false };
+
+    const newState = storiesReducer(state, action);
+
+    const expectedState = {
+      data: stories,
+      isLoading: false,
+      isError: false
+    };
+
+    expect(newState).toStrictEqual(expectedState);
+  });
+
+  it('returns isError as true on failure', () => {
+    const action = { type: 'STORIES_FETCH_FAILURE' };
+    const state = { data: [], isLoading: false, isError: false };
+
+    const newState = storiesReducer(state, action);
+
+    const expectedState = {
+      data: [],
+      isLoading: false,
+      isError: true
     };
 
     expect(newState).toStrictEqual(expectedState);
   });
 });
+
