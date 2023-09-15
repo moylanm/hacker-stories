@@ -1,12 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import App, {
-  storiesReducer,
-  Item,
-  List,
-  SearchForm,
-  InputWithLabel,
-} from '../src/App';
+import App, { storiesReducer } from '../src/App';
 
 const storyOne = {
   title: 'React',
