@@ -44,7 +44,7 @@ type StoriesRemoveAction = {
 };
 
 type StoriesAction =
-  | StoriesFetchInitAction
+  StoriesFetchInitAction
   | StoriesFetchSuccessAction
   | StoriesFetchFailureAction
   | StoriesRemoveAction;
