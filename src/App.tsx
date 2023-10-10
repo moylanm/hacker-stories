@@ -26,22 +26,20 @@ type StoriesState = {
 };
 
 type StoriesFetchInitAction = {
-  type: string;
-  payload?: any;
+  type: 'STORIES_FETCH_INIT';
 };
 
 type StoriesFetchSuccessAction = {
-  type: string;
+  type: 'STORIES_FETCH_SUCCESS';
   payload: Stories;
 };
 
 type StoriesFetchFailureAction = {
-  type: string;
-  payload?: any;
+  type: 'STORIES_FETCH_FAILURE';
 };
 
 type StoriesRemoveAction = {
-  type: string;
+  type: 'REMOVE_STORY';
   payload: Story;
 };
 
